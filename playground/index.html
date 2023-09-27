@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="assets/style.css" />
+  </head>
+  <body>
+    <div class="rain-fall"></div>
+    <script type="module">
+      import RainFall from "../dist/plain/elements/text/RainFall/index.js";
+      const ob = new RainFall();
+      ob.init(".rain-fall", {});
+      ob.setText(
+        "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm1234567890"
+      );
+      ob.draw();
+    </script>
+  </body>
+</html>

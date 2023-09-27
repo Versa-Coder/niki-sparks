@@ -1,0 +1,26 @@
+{
+  "name": "niki-sparks",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "ts-node ./build",
+    "watch": "nodemon --exec ts-node ./build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Versa-Coder/niki-sparks.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Versa-Coder/niki-sparks/issues"
+  },
+  "homepage": "https://github.com/Versa-Coder/niki-sparks#readme",
+  "devDependencies": {
+    "nodemon": "^3.0.1",
+    "ts-node": "^10.9.1"
+  }
+}

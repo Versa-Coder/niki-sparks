@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <canvas></canvas>
+
+    <script>
+      const canvas = document.querySelector(`canvas`);
+      canvas.height = 400;
+      canvas.width = 400;
+      canvas.style.backgroundColor = "#000000";
+      const ctx = canvas.getContext("2d");
+
+      const points = {
+        cp1: { x: 10, y: 20 },
+        cp2: { x: 10, y: 250 },
+        cp3: { x: 300, y: 250 },
+        cp4: { x: 300, y: 20 },
+      };
+
+      ctx.moveTo(points.cp1.x, points.cp1.y);
+      ctx.bezierCurveTo(
+        points.cp2.x,
+        points.cp2.y,
+        points.cp3.x,
+        points.cp3.y,
+        points.cp4.x,
+        points.cp4.y
+      );
+      ctx.strokeStyle = "white";
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.strokeStyle = "yellow";
+      ctx.moveTo(points.cp1.x, points.cp1.y);
+      ctx.quadraticCurveTo(
+        points.cp2.x,
+        points.cp2.y,
+        points.cp3.x,
+        points.cp3.y
+      );
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.fillStyle = "green";
+
+      ctx.font = "bold 12px sans-serif";
+
+      for (let i in points) {
+        ctx.fillText(
+          `${i} >> (${points[i].x}, ${points[i].y})`,
+          points[i].x,
+          points[i].y
+        );
+
+        if (i !== "cp1") {
+          ctx.lineTo(points[i].x, points[i].y);
+        } else {
+          ctx.moveTo(points[i].x, points[i].y);
+        }
+      }
+
+      ctx.setLineDash([4, 1]);
+      ctx.stroke();
+    </script>
+  </body>
+</html>
