@@ -8,6 +8,7 @@ class RainFall extends CanvasContainer {
   private containerData: ContainerType | null = null;
   private chars = "";
   private fontSize = 20;
+  private fontColor = "#00ff00";
   private colCount = 0;
   private configured = false;
   private currentX = 0;
@@ -25,24 +26,14 @@ class RainFall extends CanvasContainer {
 
   private doConfig() {
     if (!this.configured) {
-      const { canvas, ctx, container } = this.containerData as ContainerType;
-      canvas.height = container.offsetHeight;
-      canvas.width = container.offsetWidth;
+      const canvas = this.canvas as HTMLCanvasElement;
+      const ctx = this.ctx as CanvasRenderingContext2D;
 
       this.colCount = canvas.width / this.fontSize;
-      ctx.font = `${this.fontSize}px`;
-      ctx.fillStyle = `green`;
-
-      ctx.beginPath();
-      ctx.moveTo(0, 0);
-      ctx.arc(0, 10, 10, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.font = "48px serif";
-      ctx.strokeStyle = `green`;
-      ctx.strokeText("Hello world", 10, 80);
-
-      ctx.closePath();
+      ctx.font = `${this.fontSize}px serif`;
+      ctx.textAlign = "start";
+      ctx.textBaseline = "top";
+      ctx.fillStyle = this.fontColor;
     }
   }
 
@@ -50,29 +41,43 @@ class RainFall extends CanvasContainer {
     this.chars = Array.isArray(chars) ? chars.join("") : chars;
   }
 
+  private setFontColor(fontColor: string = this.fontColor) {
+    const ctx = this.ctx as CanvasRenderingContext2D;
+    ctx.fillStyle = fontColor;
+    this.fontColor = fontColor;
+  }
+
   private spreadText() {
-    const { canvas, ctx } = this.containerData as ContainerType;
+    const canvas = this.canvas as HTMLCanvasElement;
+    const ctx = this.ctx as CanvasRenderingContext2D;
+
+    this.setFontColor("green");
 
     this.currentX = 0;
     for (let i = 0; i < this.colCount; i++) {
+      //this.currentY = 0;
+
       const char = this.chars.charAt(
         Math.floor(Math.random() * this.chars.length)
       );
 
       ctx.fillText(char, this.currentX, this.currentY);
-      console.log(char);
 
       this.currentX += this.fontSize;
     }
     this.currentY += this.fontSize;
+    if (this.currentY > canvas.height) {
+      this.currentY = 0;
+    }
   }
 
-  public draw() {
+  public draw(stamp = 0) {
+    const canvas = this.canvas as HTMLCanvasElement;
+    const ctx = this.ctx as CanvasRenderingContext2D;
+    ctx.fillStyle = `rgba(0, 0, 0, 0.03)`;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
     this.spreadText();
-    //this.spreadText();
-    // this.spreadText();
-    // this.spreadText();
-    // this.spreadText();
+    requestAnimationFrame(this.draw.bind(this));
   }
 }
 

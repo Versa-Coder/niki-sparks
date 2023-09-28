@@ -6,25 +6,35 @@ new (class {
   }
 
   cmd(command: string) {
-    return new Promise((resolve, reject) => {
-      exec(command, (err, stdout, stderr) => {
-        console.log({ err, stderr, stdout });
-        if (err || stderr) {
-          reject(err ?? stderr);
-        } else {
-          resolve(stdout);
-        }
-      });
+    const cmd = exec(command);
+
+    cmd.stdout?.on("data", (data) => {
+      console.log(data);
+    });
+
+    cmd.stdout?.on("error", (err) => {
+      console.error(`Error occurred for COMMAND::${command}:: `, err);
+    });
+
+    cmd.stderr?.on("data", (err) => {
+      console.error(`CMD err occurred::${command}:: `, err);
+    });
+
+    cmd.on("error", (err) => {
+      console.error(`CMD err occurred::${command}:: `, err);
+    });
+
+    cmd.on("exit", (code, signal) => {
+      //console.log("here", { code, signal });
     });
   }
 
   buildPlainJs() {
-    this.cmd(`tsc -p tsconfigs/plain`)
-      .then((stat) => {
-        console.log(stat);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    let command = `tsc -p tsconfigs/plain`;
+    if (process.argv[2] === "--watch") {
+      command = `tsc --watch -p tsconfigs/plain`;
+    }
+
+    this.cmd(command);
   }
 })();

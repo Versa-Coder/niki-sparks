@@ -1,8 +1,13 @@
 export type SelectorType = null | string;
 export type CanvasSelectorType = null | string;
+export type CanvasElementType = HTMLCanvasElement | null;
+export type ContainerElementType = HTMLElement | null;
+export type CTXType = CanvasRenderingContext2D | null;
+
 export type Styles = {
   [key: string]: String;
 };
+
 export interface ContainerType {
   container: HTMLElement;
   selector: string;
@@ -11,53 +16,56 @@ export interface ContainerType {
 }
 
 export default class CanvasContainer {
-  private selector: SelectorType = null;
-  private container: HTMLElement | null = null;
-  private canvas: HTMLCanvasElement | null = null;
-  private ctx: CanvasRenderingContext2D | null = null;
+  private _selector: SelectorType = null;
+  private _container: ContainerElementType = null;
+  private _canvas: CanvasElementType = null;
+  private _ctx: CTXType = null;
 
   constructor() {}
 
-  public init(selector: string, styles: Styles = {}): ContainerType {
-    this.selector = selector;
-    this.container = this.doc(selector);
-    return this.initCanvas(null, styles);
+  public init(_selector: string, styles: Styles = {}): ContainerType {
+    this._selector = _selector;
+    this._container = this.doc(_selector);
+    const data = this.initCanvas(null, styles);
+    data.canvas.height = this._container.offsetHeight;
+    data.canvas.width = this._container.offsetWidth;
+    return data;
   }
 
   private initCanvas(
-    canvas: HTMLCanvasElement | null = null,
+    _canvas: HTMLCanvasElement | null = null,
     styles: Styles = {}
   ): ContainerType {
-    this.canvas =
-      canvas === null
+    this._canvas =
+      _canvas === null
         ? document.createElement("canvas")
-        : (canvas as HTMLCanvasElement);
+        : (_canvas as HTMLCanvasElement);
 
-    if (canvas === null) {
-      const doc = this.container as HTMLElement;
-      doc.appendChild(this.canvas);
+    if (_canvas === null) {
+      const doc = this._container as HTMLElement;
+      doc.appendChild(this._canvas);
     }
 
-    this.addStyles(this.canvas, {
+    this.addStyles(this._canvas, {
       top: "0",
       left: "0",
-      //height: "100%",
-      //width: "100%",
-      //position: "absolute",
+      height: "100%",
+      width: "100%",
+      position: "absolute",
       backgroundColor: "#000000",
       ...styles,
     });
 
-    this.ctx = this.canvas.getContext("2d");
+    this._ctx = this._canvas.getContext("2d");
 
     return this.containerInfo;
   }
 
   private doc(
-    selector: SelectorType,
+    _selector: SelectorType,
     parent: Document = document
   ): HTMLElement {
-    return parent.querySelector(selector as string) as HTMLElement;
+    return parent.querySelector(_selector as string) as HTMLElement;
   }
 
   private addStyles(element: HTMLElement, styles: Styles = {}) {
@@ -68,10 +76,26 @@ export default class CanvasContainer {
 
   get containerInfo(): ContainerType {
     return {
-      container: this.container as HTMLElement,
-      selector: this.selector as string,
-      canvas: this.canvas as HTMLCanvasElement,
-      ctx: this.ctx as CanvasRenderingContext2D,
+      container: this._container as HTMLElement,
+      selector: this._selector as string,
+      canvas: this._canvas as HTMLCanvasElement,
+      ctx: this._ctx as CanvasRenderingContext2D,
     };
+  }
+
+  get container(): ContainerElementType {
+    return this._container;
+  }
+
+  get selector(): SelectorType {
+    return this._selector;
+  }
+
+  get canvas(): CanvasElementType {
+    return this._canvas;
+  }
+
+  get ctx(): CTXType {
+    return this._ctx;
   }
 }
