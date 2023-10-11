@@ -3,6 +3,7 @@ import CanvasContainer, {
   CanvasSelectorType,
   ContainerType,
 } from "../../../utils/CanvasContainer.js";
+import FrameRateHandler from "../../../utils/Animation/FrameRateHandler.js";
 
 class RainFall extends CanvasContainer {
   private containerData: ContainerType | null = null;
@@ -74,10 +75,14 @@ class RainFall extends CanvasContainer {
   public draw(stamp = 0) {
     const canvas = this.canvas as HTMLCanvasElement;
     const ctx = this.ctx as CanvasRenderingContext2D;
-    ctx.fillStyle = `rgba(0, 0, 0, 0.03)`;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    this.spreadText();
-    requestAnimationFrame(this.draw.bind(this));
+
+    const fpsHandler = new FrameRateHandler();
+
+    fpsHandler.animate(() => {
+      ctx.fillStyle = `rgba(0, 0, 0, 0.03)`;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      this.spreadText();
+    }, 20);
   }
 }
 

@@ -1,16 +1,39 @@
 export default class FrameRateHandler {
-  private fps = 15;
+  private fps = 0;
   private rateMS = 0;
 
   constructor() {}
 
-  setFPS(time: number) {
-    this.fps = time;
+  setFPS(fps: number) {
+    this.fps = fps;
+    this.setRateMS();
   }
 
   private setRateMS() {
-    this.rateMS = 15 / 1000;
+    if (typeof this.fps === "number" && this.fps > 0) {
+      this.rateMS = 1000 / this.fps;
+    }
   }
 
-  handle(cb: Function) {}
+  animate(cb: Function, fps: number | null = null) {
+    if (typeof fps === "number") {
+      this.setFPS(fps);
+    }
+
+    let delay = 0;
+    let lastTime = 0;
+    const fn = (time: number = 0) => {
+      if (delay >= this.rateMS || this.fps === 0 || time === 0) {
+        delay = 0;
+        cb();
+      } else {
+        delay += time - lastTime;
+      }
+
+      lastTime = time > 0 ? time : 0;
+      requestAnimationFrame(fn);
+    };
+
+    fn();
+  }
 }
