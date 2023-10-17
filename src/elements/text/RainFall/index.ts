@@ -14,6 +14,7 @@ class RainFall extends CanvasContainer {
   private configured = false;
   private currentX = 0;
   private currentY = 0;
+  private colsArr: number[] = [];
 
   constructor() {
     super();
@@ -35,6 +36,10 @@ class RainFall extends CanvasContainer {
       ctx.textAlign = "start";
       ctx.textBaseline = "top";
       ctx.fillStyle = this.fontColor;
+
+      for (let i = 0; i < this.colCount; i++) {
+        this.colsArr.push(0);
+      }
     }
   }
 
@@ -54,21 +59,20 @@ class RainFall extends CanvasContainer {
 
     this.setFontColor("green");
 
-    this.currentX = 0;
-    for (let i = 0; i < this.colCount; i++) {
-      //this.currentY = 0;
+    for (let i = 0; i < this.colsArr.length; i++) {
+      let x = i * this.fontSize;
+      let y = this.colsArr[i];
 
       const char = this.chars.charAt(
         Math.floor(Math.random() * this.chars.length)
       );
 
-      ctx.fillText(char, this.currentX, this.currentY);
+      ctx.fillText(char, x, y);
+      this.colsArr[i] += this.fontSize;
 
-      this.currentX += this.fontSize;
-    }
-    this.currentY += this.fontSize;
-    if (this.currentY > canvas.height) {
-      this.currentY = 0;
+      if (this.colsArr[i] > canvas.height && Math.random() > 0.98) {
+        this.colsArr[i] = 0;
+      }
     }
   }
 
@@ -79,10 +83,10 @@ class RainFall extends CanvasContainer {
     const fpsHandler = new FrameRateHandler();
 
     fpsHandler.animate(() => {
-      ctx.fillStyle = `rgba(0, 0, 0, 0.03)`;
+      ctx.fillStyle = `rgba(0, 0, 0, 0.05)`;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       this.spreadText();
-    }, 20);
+    }, 15);
   }
 }
 
